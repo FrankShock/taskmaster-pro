@@ -13,7 +13,6 @@ var createTask = function(taskText, taskDate, taskList) {
   // append span and p element to parent li
   taskLi.append(taskSpan, taskP);
 
-
   // append to ul list on the page
   $("#list-" + taskList).append(taskLi);
 };
@@ -45,9 +44,6 @@ var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
-
-
-
 // modal was triggered
 $("#task-form-modal").on("show.bs.modal", function() {
   // clear values
@@ -77,47 +73,55 @@ $("#task-form-modal .btn-primary").click(function() {
       text: taskText,
       date: taskDate
     });
-  
+
     saveTasks();
   }
 });
 
-  $(".list-group").on("click", "p", function() {
-    var text = $(this)
-      .text()
-      .trim();
-     
-      var textInput = $("<textarea>").addClass("form-control").val(text);
-      $(this).replaceWith(textInput);
-    
-      // auto focus new element
-      textInput.trigger("focus");
-    });
-    $(".list-group").on("blur", "textarea", function() {
-      // get current value of textarea
-      var text = $(this).val();
-    
-      // get status type and position in the list
-      var status = $(this)
-        .closest(".list-group")
-        .attr("id")
-        .replace("list-", "");
-      var index = $(this)
-        .closest(".list-group-item")
-        .index();
-    
-      // update task in array and re-save to localstorage
-      tasks[status][index].text = text;
-      saveTasks();
-    
-      // recreate p element
-      var taskP = $("<p>")
-        .addClass("m-1")
-        .text(text);
-    
-      // replace textarea with new content
-      $(this).replaceWith(taskP);
-    });
+// task text was clicked
+$(".list-group").on("click", "p", function() {
+  // get current text of p element
+  var text = $(this)
+    .text()
+    .trim();
+
+  // replace p element with a new textarea
+  var textInput = $("<textarea>")
+    .addClass("form-control")
+    .val(text);
+  $(this).replaceWith(textInput);
+
+  // auto focus new element
+  textInput.trigger("focus");
+});
+
+// editable field was un-focused
+$(".list-group").on("blur", "textarea", function() {
+  // get current value of textarea
+  var text = $(this).val();
+
+  // get status type and position in the list
+  var status = $(this)
+    .closest(".list-group")
+    .attr("id")
+    .replace("list-", "");
+  var index = $(this)
+    .closest(".list-group-item")
+    .index();
+
+  // update task in array and re-save to localstorage
+  tasks[status][index].text = text;
+  saveTasks();
+
+  // recreate p element
+  var taskP = $("<p>")
+    .addClass("m-1")
+    .text(text);
+
+  // replace textarea with new content
+  $(this).replaceWith(taskP);
+});
+
 // due date was clicked
 $(".list-group").on("click", "span", function() {
   // get current text
@@ -135,6 +139,7 @@ $(".list-group").on("click", "span", function() {
   // automatically bring up the calendar
   dateInput.trigger("focus");
 });
+
 // value of due date was changed
 $(".list-group").on("blur", "input[type='text']", function() {
   var date = $(this).val();
@@ -156,7 +161,7 @@ $(".list-group").on("blur", "input[type='text']", function() {
   var taskSpan = $("<span>")
     .addClass("badge badge-primary badge-pill")
     .text(date);
-    $(this).replaceWith(taskSpan);
+  $(this).replaceWith(taskSpan);
 });
 
 // remove all tasks
@@ -170,5 +175,4 @@ $("#remove-tasks").on("click", function() {
 
 // load tasks for the first time
 loadTasks();
-
 
